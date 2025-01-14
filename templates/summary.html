@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sonuç Özeti</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sonuç Özeti</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Oyuncu İsmi</th>
+                <th>Gerçek Değer</th>
+                <th>Son Tahmin</th>
+                <th>Fark</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result['Oyuncu İsmi'] }}</td>
+                <td>{{ result['Gerçek Değer'] }} milyon Euro</td>
+                <td>{{ result['Son Tahmin'] }} milyon Euro</td>
+                <td>{{ result['Fark'] }} milyon Euro</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- <p>Oyunu tamamladınız! Tekrar oynamak için <a href="/">buraya tıklayın</a>.</p> -->
+</body>
+</html>
