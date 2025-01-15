@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game 2 - Oyuncu Sıralama Oyunu</title>
+</head>
+<body>
+    <h1>Oyuncu Sıralama Oyunu</h1>
+    <p>Skorunuz: {{ skor }}</p>
+
+    {% if message %}
+        <p><strong>{{ message }}</strong></p>
+    {% endif %}
+
+    <form action="{{ url_for('game2_bp.submit_sort_by') }}" method="POST">
+        <label for="kriter">Kriter seçin:</label>
+        <select name="kriter" id="kriter">
+            <option value="1">Piyasa Değeri</option>
+            <option value="2">Yaş</option>
+        </select><br><br>
+
+        <p>Bu oyuncuları doğru sırayla sıralayın:</p>
+        <ul>
+            {% for oyuncu in oyuncular %}
+                <li>{{ oyuncu['Oyuncu İsmi'] }}</li>
+            {% endfor %}
+        </ul>
+
+        <label for="siralama">Sıralama yapın (Örnek: 3,1,2,5,4):</label>
+        <input type="text" name="siralama" required><br><br>
+
+        <button type="submit">Sıralamayı Gönder</button>
+    </form>
+</body>
+</html>
