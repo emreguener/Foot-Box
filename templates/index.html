@@ -1,54 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>Piyasa Değeri Tahmini</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-        .input-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        input[type="number"] {
-            width: 100px;
-            text-align: center;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 14px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ana Sayfa</title>
 </head>
 <body>
-    <h1>Round {{ round_number }} / 10</h1>
-    <h2>Oyuncu: {{ player_name }}</h2>
-    <p>Oyuncunun piyasa değerini tahmin edin.</p>
-
-    {% if feedback %}
-        <p><strong>{{ feedback }}</strong></p>
-    {% endif %}
-
-    <form id="guessForm" method="POST" action="/guess">
-        <div class="input-container">
-            <button type="button" onclick="adjustValue(-0.5)">Azalt</button>
-            <input id="guessedValue" type="number" step="0.01" min="0" name="guessed_value" required>
-            <button type="button" onclick="adjustValue(0.5)">Artır</button>
-        </div>
-        <button type="submit">Tahmin Et</button>
-    </form>
-
-    <p>Kalan tahmin hakkı: {{ attempts_left }}</p>
-
-    <script>
-        function adjustValue(step) {
-            const input = document.getElementById("guessedValue");
-            const currentValue = parseFloat(input.value) || 0;
-            input.value = (currentValue + step).toFixed(2);
-        }
-    </script>
+    <h1>Hoş geldiniz!</h1>
+    <p>Burası ana sayfa. Oyun başlatmak için aşağıdaki butona tıklayın:</p>
+    <a href="{{ url_for('game1_bp.index') }}">
+        <button>Oyuna Başla</button>
+    </a>
 </body>
 </html>

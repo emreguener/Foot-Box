@@ -1,28 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>Sonuç Özeti</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-        table {
-            margin: 0 auto;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonuçlar</title>
 </head>
 <body>
-    <h1>Sonuç Özeti</h1>
-    <table>
+    <h1>Oyun Sonu</h1>
+    <p>Oyun bitti! İşte sonuçlar:</p>
+
+    <table border="1">
         <thead>
             <tr>
                 <th>Oyuncu İsmi</th>
@@ -33,15 +20,20 @@
         </thead>
         <tbody>
             {% for result in results %}
-            <tr>
-                <td>{{ result['Oyuncu İsmi'] }}</td>
-                <td>{{ result['Gerçek Değer'] }} milyon Euro</td>
-                <td>{{ result['Son Tahmin'] }} milyon Euro</td>
-                <td>{{ result['Fark'] }} milyon Euro</td>
-            </tr>
+                <tr>
+                    <td>{{ result['Oyuncu İsmi'] }}</td>
+                    <td>{{ result['Gerçek Değer'] }} milyon Euro</td>
+                    <td>{{ result['Son Tahmin'] }} milyon Euro</td>
+                    <td>{{ result['Fark'] }} milyon Euro</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
-    <!-- <p>Oyunu tamamladınız! Tekrar oynamak için <a href="/">buraya tıklayın</a>.</p> -->
+
+    <footer>
+        <a href="{{ url_for('game1_bp.index') }}">
+            <button>Yeni Oyun Başlat</button>
+        </a>
+    </footer>
 </body>
 </html>

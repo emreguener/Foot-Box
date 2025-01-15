@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyuncu Değeri Tahmini - Round {{ round_number }}</title>
+</head>
+<body>
+    <h1>Oyuncu: {{ player_name }}</h1>
+
+
+    <h3>Sonraki Adım: Tahmin Edin</h3>
+    <form action="{{ url_for('game1_bp.guess') }}" method="post">
+        <label for="guessed_value">Tahmininizi girin:</label>
+        <input type="text" id="guessed_value" name="guessed_value" required>
+        <button type="submit">Tahmin Et</button>
+    </form>
+
+    {% if feedback %}
+        <p>{{ feedback }}</p>
+    {% endif %}
+
+    <p><strong>Kalan Haklar:</strong> {{ attempts_left }}</p>
+
+    <footer>
+        <p>Round: {{ round_number }}</p>
+    </footer>
+</body>
+</html>

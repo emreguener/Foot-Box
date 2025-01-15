@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>Sonuç Görüntüleniyor</title>
-    <meta http-equiv="refresh" content="2; url=/" />
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geçici Sonuç</title>
 </head>
 <body>
-    <h1>{{ feedback }}</h1>
-    <p>2 saniye sonra yeni oyuncuya geçiliyor...</p>
+    <h1>Geçici Sonuç</h1>
+    <p>{{ feedback }}</p>
+
+    <h3>Yeni Round Başlatılıyor...</h3>
+    <a href="{{ url_for('game1_bp.index') }}">
+        <button>Sonraki Round</button>
+    </a>
 </body>
 </html>

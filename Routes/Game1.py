@@ -7,6 +7,7 @@ game1_bp = Blueprint('game1_bp', __name__)
 
 # Veri setini yükle ve piyasa değerlerini normalize et
 raw_data = pd.read_csv("C:\\Users\\batur\\OneDrive\\Masaüstü\\Personal Development\\Codes\\FootBox\\CSV Files\\TümOyuncular.csv")
+
 def normalize_market_value(value):
     if 'mil.' in value:
         return float(value.replace(' mil. €', ''))
@@ -33,7 +34,7 @@ def index():
         session['current_player'] = select_random_player(session['excluded_players']).to_dict()
         session['current_round'] = 1  # İlk roundu başlat
     return render_template(
-        'index.html', 
+        'game1.html', 
         player_name=session['current_player']['Oyuncu İsmi'], 
         player_value=session['current_player']['Piyasa Değeri'], 
         attempts_left=session['attempts_left'], 
@@ -48,7 +49,7 @@ def guess():
     if not guessed_value:
         feedback = "Lütfen bir tahmin değeri girin!"
         return render_template(
-            'index.html', 
+            'game1.html', 
             player_name=session['current_player']['Oyuncu İsmi'], 
             feedback=feedback, 
             attempts_left=session['attempts_left'], 
@@ -60,7 +61,7 @@ def guess():
     except ValueError:
         feedback = "Geçerli bir sayı girin!"
         return render_template(
-            'index.html', 
+            'game1.html', 
             player_name=session['current_player']['Oyuncu İsmi'], 
             feedback=feedback, 
             attempts_left=session['attempts_left'], 
@@ -100,7 +101,7 @@ def guess():
         return redirect(url_for('game1_bp.temp_result'))
 
     return render_template(
-        'index.html', 
+        'game1.html', 
         player_name=session['current_player']['Oyuncu İsmi'], 
         feedback=feedback, 
         attempts_left=session['attempts_left'], 
