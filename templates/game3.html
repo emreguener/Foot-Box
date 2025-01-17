@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyun 3 - Oyuncu Tahmin Oyunu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .oyuncu-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .oyuncu {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            width: 200px;
+        }
+        .oyuncu img {
+            max-width: 100%;
+            height: auto;
+        }
+        .message {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: red;
+            text-align: center;
+        }
+        .skor {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Oyuncu Tahmin Oyunu</h1>
+    <p class="skor">Skorunuz: {{ skor }}</p>
+    
+    {% if message %}
+        <p class="message">{{ message }}</p>
+    {% endif %}
+    
+    <div class="oyuncu-container">
+        <div class="oyuncu">
+            <p>{{ sabit_oyuncu['Oyuncu İsmi'] }}<br>Yaş: {{ sabit_oyuncu['Yaş'] }}<br></p>
+        </div>
+        <div class="oyuncu">
+            <p>{{ rakip_oyuncu['Oyuncu İsmi'] }}<br>Yaş: {{ rakip_oyuncu['Yaş'] }}<br></p>
+        </div>
+    </div>
+
+    <form method="POST">
+        <p>Hangi oyuncunun piyasa değeri daha yüksek?</p>
+        <label>
+            <input type="radio" name="tahmin" value="1" required> 1. {{ sabit_oyuncu['Oyuncu İsmi'] }}
+        </label><br>
+        <label>
+            <input type="radio" name="tahmin" value="2" required> 2. {{ rakip_oyuncu['Oyuncu İsmi'] }}
+        </label><br><br>
+        <button type="submit">Tahmin Et</button>
+    </form>
+
+</body>
+</html>

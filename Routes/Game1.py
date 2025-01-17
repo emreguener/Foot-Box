@@ -6,7 +6,7 @@ game1_bp = Blueprint('game1_bp', __name__)
 
 
 # Veri setini yükle ve piyasa değerlerini normalize et
-raw_data = pd.read_csv("C:\\Users\\batur\\OneDrive\\Masaüstü\\Personal Development\\Codes\\FootBox\\CSV Files\\TümOyuncular.csv")
+raw_data = pd.read_csv("C:\\Users\\batur\\OneDrive\\Masaüstü\\Personal Development\\Codes\\FootBox\\CSV Files\\TümOyuncular1.csv")
 
 def normalize_market_value(value):
     if 'mil.' in value:

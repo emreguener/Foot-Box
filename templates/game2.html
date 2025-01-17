@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game 2 - Oyuncu Sıralama Oyunu</title>
+    <style>
+        #oyuncular {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #oyuncular li {
+            margin: 10px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            cursor: move;
+        }
+    </style>
 </head>
 <body>
     <h1>Oyuncu Sıralama Oyunu</h1>
@@ -15,22 +29,76 @@
 
     <form action="{{ url_for('game2_bp.submit_sort_by') }}" method="POST">
         <label for="kriter">Kriter seçin:</label>
-        <select name="kriter" id="kriter">
+        <select name="kriter" id="kriter" required>
             <option value="1">Piyasa Değeri</option>
             <option value="2">Yaş</option>
         </select><br><br>
 
         <p>Bu oyuncuları doğru sırayla sıralayın:</p>
-        <ul>
+        <ul id="oyuncular">
             {% for oyuncu in oyuncular %}
-                <li>{{ oyuncu['Oyuncu İsmi'] }}</li>
+                <li id="oyuncu_{{ loop.index }}" draggable="true" ondragstart="drag(event)" data-index="{{ loop.index }}">{{ oyuncu['Oyuncu İsmi'] }}</li>
             {% endfor %}
         </ul>
 
         <label for="siralama">Sıralama yapın (Örnek: 3,1,2,5,4):</label>
-        <input type="text" name="siralama" required><br><br>
+        <input type="text" name="siralama" id="siralama" placeholder="Örnek: 3,1,2,5,4" required pattern="^(\d,)*\d$"><br><br>
 
         <button type="submit">Sıralamayı Gönder</button>
     </form>
+
+    <script>
+        let dragged;
+
+        // Elementi sürüklerken yapılacak işlem
+        function drag(event) {
+            dragged = event.target;
+            event.dataTransfer.setData("text", dragged.id);
+        }
+
+        // Sürüklenen öğenin bırakılabileceği alan
+        const oyuncularListesi = document.getElementById("oyuncular");
+        oyuncularListesi.addEventListener("dragover", function(event) {
+            event.preventDefault();
+        });
+
+        oyuncularListesi.addEventListener("drop", function(event) {
+            event.preventDefault();
+            const data = event.dataTransfer.getData("text");
+            const droppedElement = document.getElementById(data);
+
+            // Öğeyi yeni konumda değiştirme
+            let afterElement = getDragAfterElement(oyuncularListesi, event.clientY);
+            if (afterElement == null) {
+                oyuncularListesi.appendChild(droppedElement);
+            } else {
+                oyuncularListesi.insertBefore(droppedElement, afterElement);
+            }
+
+            // Yeni sıralamayı almak için sıralamayı güncelle
+            updateOrder();
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll("li")];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function updateOrder() {
+            const order = [];
+            document.querySelectorAll("#oyuncular li").forEach((li, index) => {
+                order.push(index + 1);
+            });
+            document.getElementById("siralama").value = order.join(',');
+        }
+    </script>
 </body>
 </html>

@@ -7,7 +7,7 @@ game2_bp = Blueprint('game2_bp', __name__)
 
 # Örnek veri
 # Burada kendi verinizi kullandığınızda aşağıdaki satırı kaldırabilirsiniz
-new_df2 = pd.read_csv("C:\\Users\\batur\\OneDrive\\Masaüstü\\Personal Development\\Codes\\FootBox\\CSV Files\\TümOyuncular.csv")
+new_df2 = pd.read_csv("C:\\Users\\batur\\OneDrive\\Masaüstü\\Personal Development\\Codes\\FootBox\\CSV Files\\TümOyuncular1.csv")
 
 # Oyun başladığında oturum değişkenlerini ayarla
 @game2_bp.route('/game2')
@@ -30,41 +30,53 @@ def submit_sort_by():
     try:
         # Veriler
         kriter = request.form.get('kriter')
-        kullanici_sirasi = list(map(int, request.form.get('siralama').split(',')))
+        siralama = request.form.get('siralama')
 
-        if kriter not in ["1", "2"]:
+        if not kriter or kriter not in ["1", "2"]:
             raise ValueError("Geçersiz kriter!")
 
-        # Kriterlere göre sıralama yap
-        kriter_adi = "Piyasa Değeri (Sayısal)" if kriter == "1" else "Yaş"
+        if not siralama:
+            raise ValueError("Sıralama bilgisi gönderilmedi!")
+
+        try:
+            # Kullanıcı girdisini sıfır tabanlı indekslere çevirin
+            kullanici_sirasi = [int(i) - 1 for i in siralama.split(',')]
+            if len(kullanici_sirasi) != len(set(kullanici_sirasi)):
+                raise ValueError("Sıralamada tekrar eden indeksler var!")
+        except ValueError:
+            raise ValueError("Sıralama bilgisi yalnızca benzersiz sayılardan oluşmalıdır!")
 
         # Rastgele seçilen oyuncuları listele
         oyuncular = new_df2.sample(5).reset_index(drop=True)
 
-        # Kullanıcının sıralamasını yap
-        # Kullanıcı sıralama için girdiği indekslerin geçerli olup olmadığını kontrol et
-        if not all(0 <= i < len(oyuncular) for i in kullanici_sirasi):
-            raise ValueError("Geçersiz sıralama! Girdiğiniz indeksler geçerli değil.")
+        if oyuncular.empty:
+            raise ValueError("Oyuncu listesi boş!")
 
+        # Kullanıcı tarafından verilen indekslerin doğruluğunu kontrol edin
+        if not all(0 <= i < len(oyuncular) for i in kullanici_sirasi):
+            raise ValueError(f"Geçersiz sıralama! İndeksler 1 ile {len(oyuncular)} arasında olmalı.")
+
+        # Kullanıcı sıralamasını uygulayın
         kullanici_siralamasi = oyuncular.iloc[kullanici_sirasi]
 
-        # Doğru sıralama
+        # Doğru sıralama kriterine göre sıralayın
+        kriter_adi = "Piyasa Değeri (Sayısal)" if kriter == "1" else "Yaş"
         dogru_siralama = oyuncular.sort_values(by=kriter_adi, ascending=(kriter == "2")).reset_index(drop=True)
 
-        # Skor kontrolü
+        # Sıralamaları karşılaştırın
         if kullanici_siralamasi.equals(dogru_siralama):
             skor = session.get('skor', 0) + 1
-            session['skor'] = skor  # Skoru güncelle
+            session['skor'] = skor
             return render_template(
-                'game2.html', 
-                oyuncular=oyuncular.to_dict(orient='records'), 
+                'game2.html',
+                oyuncular=oyuncular.to_dict(orient='records'),
                 skor=skor,
                 message="Tebrikler! Doğru sıralama yaptınız."
             )
         else:
             return render_template(
-                'game2.html', 
-                oyuncular=oyuncular.to_dict(orient='records'), 
+                'game2.html',
+                oyuncular=oyuncular.to_dict(orient='records'),
                 skor=session.get('skor', 0),
                 message="Yanlış sıralama! Lütfen tekrar deneyin."
             )
