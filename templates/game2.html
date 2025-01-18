@@ -3,84 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game 2 - Oyuncu Sıralama Oyunu</title>
+    <title>Oyuncu Sıralama Oyunu</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
         #oyuncular {
             list-style-type: none;
             padding: 0;
+            width: 320px;
         }
 
         #oyuncular li {
             margin: 10px;
             padding: 10px;
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-            cursor: move;
+            background-color: #ffffff;
+            border: 2px solid #007bff;
+            cursor: grab;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        #oyuncular li:hover {
+            background-color: #e3f2fd;
+        }
+
+        .dragging {
+            opacity: 0.5;
+            background-color: #d1d1d1;
+        }
+
+        .message-box {
+            width: 80%;
+            max-width: 500px;
+            padding: 15px;
+            margin: 15px auto;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .success-box {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-box {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .ranking-section {
+            background-color: #ffffff;
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 320px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>Oyuncu Sıralama Oyunu</h1>
-    <p>Skorunuz: {{ skor }}</p>
+    <div class="container">
+        <h1>Oyuncu Sıralama Oyunu</h1>
+        <p><strong>Tur: {{ tur }}/10</strong></p>
+        <p>Skorunuz: <strong>{{ skor }}</strong></p>
 
-    {% if message %}
-        <p><strong>{{ message }}</strong></p>
-    {% endif %}
+        {% if message %}
+            <div class="message-box {% if '✅' in message %}success-box{% else %}error-box{% endif %}">
+                {{ message|safe }}
+            </div>
+        {% endif %}
 
-    <form action="{{ url_for('game2_bp.submit_sort_by') }}" method="POST">
-        <label for="kriter">Kriter seçin:</label>
-        <select name="kriter" id="kriter" required>
-            <option value="1">Piyasa Değeri</option>
-            <option value="2">Yaş</option>
-        </select><br><br>
+        <div class="ranking-section">
+            <h3>En Yüksek</h3>
+            <ul id="oyuncular">
+                {% for oyuncu in oyuncular %}
+                    <li id="oyuncu_{{ loop.index }}" draggable="true" class="draggable" data-index="{{ loop.index }}">
+                        {{ oyuncu['Oyuncu İsmi'] }} 
+                    </li>
+                {% endfor %}
+            </ul>
+            <h3>En Düşük</h3>
+        </div>
 
-        <p>Bu oyuncuları doğru sırayla sıralayın:</p>
-        <ul id="oyuncular">
-            {% for oyuncu in oyuncular %}
-                <li id="oyuncu_{{ loop.index }}" draggable="true" ondragstart="drag(event)" data-index="{{ loop.index }}">{{ oyuncu['Oyuncu İsmi'] }}</li>
-            {% endfor %}
-        </ul>
-
-        <label for="siralama">Sıralama yapın (Örnek: 3,1,2,5,4):</label>
-        <input type="text" name="siralama" id="siralama" placeholder="Örnek: 3,1,2,5,4" required pattern="^(\d,)*\d$"><br><br>
-
-        <button type="submit">Sıralamayı Gönder</button>
-    </form>
+        <form action="{{ url_for('game2_bp.submit_sort_by') }}" method="POST">
+            <input type="hidden" name="siralama" id="siralama">
+            <button type="submit">Sıralamayı Gönder</button>
+        </form>
+    </div>
 
     <script>
-        let dragged;
-
-        // Elementi sürüklerken yapılacak işlem
-        function drag(event) {
-            dragged = event.target;
-            event.dataTransfer.setData("text", dragged.id);
-        }
-
-        // Sürüklenen öğenin bırakılabileceği alan
         const oyuncularListesi = document.getElementById("oyuncular");
-        oyuncularListesi.addEventListener("dragover", function(event) {
-            event.preventDefault();
+        let draggedItem = null;
+
+        // Sürükleme başlatıldığında
+        document.querySelectorAll(".draggable").forEach(item => {
+            item.addEventListener("dragstart", function (event) {
+                draggedItem = event.target;
+                setTimeout(() => event.target.classList.add("dragging"), 0);
+                event.dataTransfer.effectAllowed = "move";
+            });
+
+            item.addEventListener("dragend", function (event) {
+                setTimeout(() => event.target.classList.remove("dragging"), 0);
+                draggedItem = null;
+                updateOrder();
+            });
         });
 
-        oyuncularListesi.addEventListener("drop", function(event) {
+        // Sürükleme esnasında hedef alanı belirle
+        oyuncularListesi.addEventListener("dragover", function (event) {
             event.preventDefault();
-            const data = event.dataTransfer.getData("text");
-            const droppedElement = document.getElementById(data);
-
-            // Öğeyi yeni konumda değiştirme
-            let afterElement = getDragAfterElement(oyuncularListesi, event.clientY);
+            const afterElement = getDragAfterElement(oyuncularListesi, event.clientY);
             if (afterElement == null) {
-                oyuncularListesi.appendChild(droppedElement);
+                oyuncularListesi.appendChild(draggedItem);
             } else {
-                oyuncularListesi.insertBefore(droppedElement, afterElement);
+                oyuncularListesi.insertBefore(draggedItem, afterElement);
             }
-
-            // Yeni sıralamayı almak için sıralamayı güncelle
-            updateOrder();
         });
 
         function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll("li")];
+            const draggableElements = [...container.querySelectorAll(".draggable:not(.dragging)")];
+
             return draggableElements.reduce((closest, child) => {
                 const box = child.getBoundingClientRect();
                 const offset = y - box.top - box.height / 2;
@@ -94,11 +170,14 @@
 
         function updateOrder() {
             const order = [];
-            document.querySelectorAll("#oyuncular li").forEach((li, index) => {
-                order.push(index + 1);
+            document.querySelectorAll("#oyuncular li").forEach((li) => {
+                order.push(li.dataset.index);
             });
             document.getElementById("siralama").value = order.join(',');
         }
     </script>
+    <a href="{{ url_for('index') }}">
+        <button>Ana Menüye Dön</button>
+    </a>
 </body>
 </html>

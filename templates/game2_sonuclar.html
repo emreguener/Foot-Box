@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyun Sonuçları</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Oyun Sonuçları</h1>
+    <p>Toplam Skor: <strong>{{ skor }}</strong></p>
+
+    <table>
+        <tr>
+            <th>Tur</th>
+            <th>Oyuncular</th>
+            <th>Senin Sıralaman</th>
+            <th>Doğru Sıralama</th>
+            <th>Sonuç</th>
+        </tr>
+        {% for tur in tur_ozet %}
+        <tr>
+            <td>{{ tur.tur }}</td>
+            <td>{{ tur.oyuncular|join(', ') }}</td>
+            <td>{{ tur.kullanici_siralama|join(', ') }}</td>
+            <td>{{ tur.dogru_siralama|join(', ') }}</td>
+            <td class="{% if '✅' in tur.sonuc %}success{% else %}error{% endif %}">{{ tur.sonuc }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('game2_bp.yeni_oyun') }}">
+        <button>Yeni Oyuna Başla</button>
+    </a>
+    
+
+    <a href="{{ url_for('index') }}">
+        <button>Ana Menüye Dön</button>
+    </a>
+</body>
+</html>

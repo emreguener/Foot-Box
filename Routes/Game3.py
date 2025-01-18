@@ -1,11 +1,22 @@
 from flask import Blueprint, render_template, request, session
 import pandas as pd
+import os
 
 # Blueprint tanımı
 game3_bp = Blueprint('game3_bp', __name__)
 
-# Örnek veri
-new_df = pd.read_csv("C:\\Users\\batur\\OneDrive\\Masaüstü\\Personal Development\\Codes\\FootBox\\CSV Files\\TümOyuncular1.csv")
+# BASE_DIR, "Routes" klasöründen bir üst dizine çıkmalı
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Foot-Box klasörüne çıkar
+
+# CSV dosyasının tam yolu
+CSV_PATH = os.path.join(BASE_DIR, "CSV Files", "TümOyuncular1.csv")
+
+# Dosyanın gerçekten var olup olmadığını kontrol et
+if not os.path.exists(CSV_PATH):
+    raise FileNotFoundError(f"CSV dosyası bulunamadı: {CSV_PATH}")
+
+# CSV dosyasını oku
+new_df = pd.read_csv(CSV_PATH, encoding='utf-8')
 
 # Oyun başladığında oturum değişkenlerini ayarla
 @game3_bp.route('/game3', methods=['GET', 'POST'])

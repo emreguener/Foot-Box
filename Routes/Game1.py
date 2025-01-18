@@ -1,12 +1,22 @@
 from flask import Blueprint, Flask, request, render_template, session, redirect, url_for
 import random
 import pandas as pd
-
+import os
 game1_bp = Blueprint('game1_bp', __name__)
 
 
-# Veri setini yükle ve piyasa değerlerini normalize et
-raw_data = pd.read_csv("C:\\Users\\batur\\OneDrive\\Masaüstü\\Personal Development\\Codes\\FootBox\\CSV Files\\TümOyuncular1.csv")
+# BASE_DIR, "Routes" klasöründen bir üst dizine çıkmalı
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Foot-Box klasörüne çıkar
+
+# CSV dosyasının tam yolu
+CSV_PATH = os.path.join(BASE_DIR, "CSV Files", "TümOyuncular1.csv")
+
+# Dosyanın gerçekten var olup olmadığını kontrol et
+if not os.path.exists(CSV_PATH):
+    raise FileNotFoundError(f"CSV dosyası bulunamadı: {CSV_PATH}")
+
+# CSV dosyasını oku
+raw_data = pd.read_csv(CSV_PATH, encoding='utf-8')
 
 def normalize_market_value(value):
     if 'mil.' in value:
