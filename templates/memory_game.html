@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+        form {
+            text-align: center;
+            margin: 20px auto;
+        }
+        label, input, button {
+            font-size: 16px;
+        }
+        input, button {
+            padding: 8px;
+            margin: 5px;
+        }
+        input[type="number"] {
+            width: 60px;
+        }
+        button {
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .feedback {
+            text-align: center;
+            margin: 20px;
+            font-size: 18px;
+        }
+        .feedback.success {
+            color: green;
+        }
+        .feedback.error {
+            color: red;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        td {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid black;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: #fff;
+        }
+        td.hidden {
+            background-color: #ccc;
+            cursor: pointer;
+        }
+        td.matched {
+            background-color: #90ee90;
+        }
+    </style>
+</head>
+<body>
+    <h1>Memory Game</h1>
+
+    <!-- Oyun başlatma formu -->
+    <form action="/memory_game/init" method="POST">
+        <label for="card_number">Kaç adet kart çifti kullanmak istersiniz?</label>
+        <input type="number" id="card_number" name="card_number" min="1" placeholder="Çift sayısı" required>
+        <button type="submit">Oyunu Başlat</button>
+    </form>
+
+    <!-- Feedback ve oyun tablosu -->
+    {% if hidden_board %}
+    <div class="feedback {% if feedback == 'Eşleşme bulundu!' %}success{% else %}error{% endif %}">
+        {{ feedback }}
+    </div>
+
+    <table>
+        {% for row in hidden_board %}
+        <tr>
+            {% for cell in row %}
+            <!-- Kart türüne göre stil eklenmesi -->
+            <td class="{% if cell == '*' %}hidden{% elif cell != '*' %}matched{% endif %}">{{ cell }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Tahmin yapma formu -->
+    <form action="/memory_game/guess" method="POST">
+        <div>
+            <label for="row1">İlk kart (Satır, Sütun):</label>
+            <input type="number" id="row1" name="row1" min="0" placeholder="Satır" required>
+            <input type="number" id="col1" name="col1" min="0" placeholder="Sütun" required>
+        </div>
+        <div>
+            <label for="row2">İkinci kart (Satır, Sütun):</label>
+            <input type="number" id="row2" name="row2" min="0" placeholder="Satır" required>
+            <input type="number" id="col2" name="col2" min="0" placeholder="Sütun" required>
+        </div>
+        <button type="submit">Tahmin Yap</button>
+    </form>
+    {% endif %}
+</body>
+</html>
