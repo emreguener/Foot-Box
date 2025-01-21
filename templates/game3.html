@@ -19,14 +19,24 @@
             margin: 20px 0;
         }
         .oyuncu {
-            border: 1px solid #ddd;
+            border: 4px solid transparent; /* Varsayılan çerçeve rengi */
             padding: 15px;
             text-align: center;
             width: 200px;
+            border-radius: 10px;
+            background-color: #fff;
+            transition: border-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .oyuncu img {
             max-width: 100%;
             height: auto;
+            margin-bottom: 10px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+        }
+        .oyuncu:hover {
+            border-width: 6px; /* Çerçeve genişliği hover durumunda artar */
         }
         .message {
             font-size: 1.2em;
@@ -39,6 +49,21 @@
             font-weight: bold;
             text-align: center;
         }
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -50,21 +75,31 @@
     {% endif %}
     
     <div class="oyuncu-container">
-        <div class="oyuncu">
-            <p>{{ sabit_oyuncu['Oyuncu İsmi'] }}<br>Yaş: {{ sabit_oyuncu['Yaş'] }}<br></p>
+        <div class="oyuncu" style="border-color: {{ oyuncu1['Takım Rengi'] }};">
+            <img src="{{ oyuncu1['Fotoğraf URL'] }}" alt="Oyuncu Fotoğrafı">
+            <p>
+                <strong>{{ oyuncu1['Oyuncu İsmi'] }}</strong><br>
+                Yaş: {{ oyuncu1['Yaş'] }}<br>
+
+            </p>
         </div>
-        <div class="oyuncu">
-            <p>{{ rakip_oyuncu['Oyuncu İsmi'] }}<br>Yaş: {{ rakip_oyuncu['Yaş'] }}<br></p>
+        <div class="oyuncu" style="border-color: {{ oyuncu2['Takım Rengi'] }};">
+            <img src="{{ oyuncu2['Fotoğraf URL'] }}" alt="Oyuncu Fotoğrafı">
+            <p>
+                <strong>{{ oyuncu2['Oyuncu İsmi'] }}</strong><br>
+                Yaş: {{ oyuncu2['Yaş'] }}<br>
+
+            </p>
         </div>
     </div>
 
     <form method="POST">
         <p>Hangi oyuncunun piyasa değeri daha yüksek?</p>
         <label>
-            <input type="radio" name="tahmin" value="1" required> 1. {{ sabit_oyuncu['Oyuncu İsmi'] }}
+            <input type="radio" name="tahmin" value="1" required> 1. {{ oyuncu1['Oyuncu İsmi'] }}
         </label><br>
         <label>
-            <input type="radio" name="tahmin" value="2" required> 2. {{ rakip_oyuncu['Oyuncu İsmi'] }}
+            <input type="radio" name="tahmin" value="2" required> 2. {{ oyuncu2['Oyuncu İsmi'] }}
         </label><br><br>
         <button type="submit">Tahmin Et</button>
     </form>
