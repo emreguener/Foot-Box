@@ -4,21 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ana Sayfa</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 40px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.8em;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        main {
+            margin: 50px auto;
+            max-width: 650px;
+        }
+
+        p {
+            font-size: 1.4em;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        .highlight {
+            color: #333;
+            font-weight: 500;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 25px;
+            margin: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        footer {
+            background: linear-gradient(to right, #a5d6a7, #388e3c); /* Açık yeşilden koyu yeşile geçiş */
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .footer-image {
+            margin-top: 15px;
+        }
+
+        .footer-image img {
+            width: 50px;
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-image img:hover {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2em;
+            }
+
+            button {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+
+            p {
+                font-size: 1.2em;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Hoş geldiniz!</h1>
-    <p>Burası ana sayfa. Oyun başlatmak için aşağıdaki butona tıklayın:</p>
-    <a href="{{ url_for('game1_bp.index') }}">
-        <button>Oyun1 Başla</button>
-    </a>
-    <a href="{{ url_for('game2_bp.index') }}">
-        <button>Oyun2 Başla</button>
-    </a>
-    <a href="{{ url_for('game3_bp.index') }}">
-        <button>Oyun3 Başla</button>
-    </a>
-    <a href="{{ url_for('memory_game_bp.memory_game') }}">
-        <button>Oyun4 Başla</button>
-    </a>
+    <header>
+        <h1>Hoş geldiniz!</h1>
+    </header>
+    <main>
+        <p class="highlight">Oyun başlatmak için aşağıdaki butonlara tıklayın:</p>
+        <div>
+            <a href="{{ url_for('game1_bp.index') }}">
+                <button>Oyun1 Başla</button>
+            </a>
+            <a href="{{ url_for('game2_bp.index') }}">
+                <button>Oyun2 Başla</button>
+            </a>
+            <a href="{{ url_for('game3_bp.game3') }}">
+                <button>Oyun3 Başla</button>
+            </a>
+            <a href="{{ url_for('memory_game_bp.memory_game') }}">
+                <button>Oyun4 Başla</button>
+            </a>
+        </div>
+    </main>
+    <footer>
+        <p>2025 Yılı itibariyle tüm hakları saklıdır.</p>
+        <div class="footer-image">
+            <img src="{{ url_for('static', filename='Images/FutbolTopu.png') }}" alt="Futbol Topu">
+        </div>
+    </footer>
 </body>
 </html>

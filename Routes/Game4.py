@@ -94,10 +94,15 @@ def make_guess():
 
         board = session['board']
         hidden_board = session['hidden_board']
+        opened_cards = session.get('opened_cards', [])
 
         # Aynı kart kontrolü
         if (row1 == row2) and (col1 == col2):
             return render_template('memory_game.html', hidden_board=hidden_board, feedback="Aynı kartı iki kez seçemezsiniz!", revealed_board=board)
+
+        # Seçilen kartın daha önce açılıp açılmadığını kontrol et
+        if (row1, col1) in opened_cards or (row2, col2) in opened_cards:
+            return render_template('memory_game.html', hidden_board=hidden_board, feedback="Bu kartlardan biri veya her ikisi daha önce açılmış!", revealed_board=board)
 
         # Kartları aç
         card1 = board[row1][col1]
@@ -105,6 +110,11 @@ def make_guess():
 
         hidden_board[row1][col1] = card1
         hidden_board[row2][col2] = card2
+
+        # Açılan kartları kaydet
+        opened_cards.append((row1, col1))
+        opened_cards.append((row2, col2))
+        session['opened_cards'] = opened_cards
 
         session['hidden_board'] = hidden_board
 
@@ -114,7 +124,7 @@ def make_guess():
         else:
             hidden_board[row1][col1] = '*'
             hidden_board[row2][col2] = '*'
-            feedback = f"Eşleşme yok! Açılan kartlar: Card-1|{row1}-{col1} {card1} \n ve Card-2|{row2}-{col2}: {card2}"
+            feedback = f"Eşleşme yok! Açılan kartlar: Card-1|{row1}-{col1} {card1} ve Card-2|{row2}-{col2}: {card2}"
 
         session.modified = True
         return render_template('memory_game.html', hidden_board=hidden_board, feedback=feedback, revealed_board=board)
